@@ -1,4 +1,5 @@
-# ALU Shell
+# alu-shell
 
-This repository contains basic shell scripts for learning shell commands and scripting.
+## 0-iam_betty
+This script switches the current user to the user `betty` using the `su` command.
 
