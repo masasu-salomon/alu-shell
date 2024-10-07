@@ -1,29 +1,34 @@
 #!/usr/bin/env bash
-#
+# This script processes Apache log files, grouping by IP and HTTP status code.
 
-# Check if log file is provided
+# Check if the log file is provided and exists
 if [[ ! -f "$1" ]]; then
     echo "Error: Log file not found or not provided."
     exit 1
 fi
 
-# Check if log file is empty
+# Check if the log file is empty
 if [[ ! -s "$1" ]]; then
     echo "The log file is empty."
     exit 0
 fi
 
-# Use awk to process the log file
+# Use awk to process the log file, group by IP and HTTP status code, and count occurrences
 awk '
+# Only consider lines that have at least 9 fields, a valid IP address and a valid status code
 {
     if (NF >= 9 && $1 ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ && $9 ~ /^[0-9]+$/) {
         count[$1" "$9]++
     }
 } 
+# At the end, print the results in the required format, sorted by occurrence count
 END {
     if (length(count) == 0) {
         print "No valid data found in the log file."
     } else {
-        for (key in count) print count[key], key
+        for (key in count) {
+            print count[key], key
+        }
     }
 }' "$1" | sort -nr
+
