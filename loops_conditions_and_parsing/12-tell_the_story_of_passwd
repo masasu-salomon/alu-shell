@@ -1,7 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# 
 
+# Set the Internal Field Separator to newline
 IFS=$'\n'
 
+# Read the /etc/passwd file line by line
 while read -r line; do
     # Split the line into fields using colon as the delimiter
     username=$(echo "$line" | cut -d':' -f1)
@@ -12,6 +15,7 @@ while read -r line; do
     home_directory=$(echo "$line" | cut -d':' -f6)
     shell=$(echo "$line" | cut -d':' -f7)
 
+    # Format and print the output
     echo "The user $username is part of the $gid gang, lives in $home_directory and rides $shell. $uid's place is protected by the passcode $password, more info about the user here: $user_info"
 done < /etc/passwd
 
