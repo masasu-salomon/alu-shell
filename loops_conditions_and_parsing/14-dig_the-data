@@ -1,6 +1,29 @@
 #!/usr/bin/env bash
 #
 
-# Use awk to process the log file
-awk '{print $1, $9}' /path/to/logfile.log | awk '{count[$1" "$2]++} END {for (key in count) print count[key], key}' | sort -nr
+# Check if log file is provided
+if [[ ! -f "$1" ]]; then
+    echo "Error: Log file not found or not provided."
+    exit 1
+fi
 
+# Check if log file is empty
+if [[ ! -s "$1" ]]; then
+    echo "The log file is empty."
+    exit 0
+fi
+
+# Use awk to process the log file
+awk '
+{
+    if (NF >= 9 && $1 ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ && $9 ~ /^[0-9]+$/) {
+        count[$1" "$9]++
+    }
+} 
+END {
+    if (length(count) == 0) {
+        print "No valid data found in the log file."
+    } else {
+        for (key in count) print count[key], key
+    }
+}' "$1" | sort -nr
