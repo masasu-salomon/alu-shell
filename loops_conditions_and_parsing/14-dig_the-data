@@ -15,19 +15,20 @@ fi
 
 # Use awk to process the log file, group by IP and HTTP status code, and count occurrences
 awk '
-# Only consider lines that have at least 9 fields, a valid IP address and a valid status code
+# Only consider lines that have at least 9 fields, a valid IP address, and a valid status code
 {
     if (NF >= 9 && $1 ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ && $9 ~ /^[0-9]+$/) {
         count[$1" "$9]++
     }
 } 
-# At the end, print the results in the required format, sorted by occurrence count
+# Print the results in the required format, sorted by occurrence count
 END {
     if (length(count) == 0) {
         print "No valid data found in the log file."
     } else {
-        for (key in count) {
-            print count[key], key
+        # Output the counts in the desired format
+        for (ip_status in count) {
+            print count[ip_status], ip_status
         }
     }
 }' "$1" | sort -nr
